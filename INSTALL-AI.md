@@ -77,7 +77,7 @@ node -v
 
 ---
 
-## 3. 下载 zip + 校验 sha256
+## 3. 下载 zip + 校验 sha256（**这步不许跳**）
 
 ```powershell
 $zipName = $latest.zip
@@ -98,6 +98,10 @@ Write-Output "实际 $sha"
 ---
 
 ## 4. 解压到默认目录（可以换盘）
+
+> ⚠ **必须用下面这条 PowerShell `Expand-Archive`**。2026-10-30 两次真机实测：用 `unzip`（含 Git Bash 自带那个）
+> 会把 `启动千川管家.cmd` 和 `千川任务执行表.xlsx` 解成乱码 —— 不是包坏了（zip 里这两个名字都带 UTF-8 标志位），
+> 是解压工具忽略了标志位。事后改名也能救，但多一步就多一次出错机会。
 
 ```powershell
 $bin = Join-Path $env:LOCALAPPDATA 'Programs\千川管家'
@@ -121,6 +125,7 @@ core\   platform\   console\   updater\   tools\   node_modules\
 **不要**解压到 `C:\Program Files`（普通权限写不了，以后升级会失败）。
 
 **告诉用户装在哪**：把 `$bin` 的**绝对路径**记下来，汇报时要说（用户以后要找程序、备份、重装都靠它）。
+如果你把程序装到了**别的地方**（不是默认的 `%LOCALAPPDATA%\Programs\千川管家`），**必须在汇报里写明装在哪**。
 
 ---
 
@@ -282,7 +287,7 @@ Test-Path (Join-Path $dst 'SKILL.md')
 
 ---
 
-## 11. 冒烟（装完必须跑，三步）
+## 11. 冒烟（装完必须跑，三步）—— **跳过就不算装好**
 
 ```powershell
 # ① 控制台活着：/ 跟随后 200（新机器首启会 302 到配置向导，正常）
